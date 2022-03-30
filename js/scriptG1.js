@@ -1,12 +1,14 @@
 window.addEventListener("load", function () {
   const canvas = document.getElementById("canvas1");
-
+  var audio = new Audio("./super-mario-bros-4293.mp3");
+  audio.play();
   const ctx = canvas.getContext("2d");
   canvas.width = 800;
   canvas.height = 720;
   let enemies = [];
   let score = 0;
   let gameOver = false;
+  let finished = false;
   class InputHandler {
     constructor() {
       this.keys = [];
@@ -257,9 +259,18 @@ window.addEventListener("load", function () {
 
     context.fillStyle = "white";
     context.fillText("Score: " + score, 22, 52);
+    if (finished == true) {
+      context.textAlign = "center";
 
+      context.fillStyle = "black";
+      context.fillText("finished level 1  ", canvas.width / 2, 200);
+
+      context.fillStyle = "green";
+      context.fillText("finished level 1  ", canvas.width / 2 + 2, 202);
+      gameOver = true;
+    }
     //When Game Over
-    if (gameOver) {
+    if (gameOver && finished == false) {
       context.textAlign = "center";
 
       context.fillStyle = "black";
@@ -284,6 +295,7 @@ window.addEventListener("load", function () {
   let randomEnemyInterval = Math.random() * 500 + 1000;
 
   function animate(timeStamp) {
+    audio.play();
     const deltaTime = timeStamp - lastTime;
     lastTime = timeStamp;
     // console.log(deltaTime);
@@ -294,7 +306,11 @@ window.addEventListener("load", function () {
 
     player.update(input, deltaTime, enemies);
     handleEnemies(deltaTime);
+    if (score == 5) {
+      finished = true;
+    }
     displayStatusText(ctx);
+    if (gameOver || finished) audio.pause();
     if (!gameOver) requestAnimationFrame(animate);
   }
   animate(0);
